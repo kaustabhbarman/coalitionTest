@@ -48,7 +48,7 @@
                         <div class="card-header">{{ __('Enter Inventory Details') }}</div>
 
                         <div class="card-body">
-                            <form method="POST" action="">
+                            <form action="{{ url('/submit')}}" method="POST" id="myForm">
                                 @csrf
 
                                 <div class="form-group row">
@@ -95,8 +95,8 @@
 
                                 <div class="form-group row mb-0">
                                     <div class="col-md-6 offset-md-4">
-                                        <button type="submit" class="btn btn-primary">
-                                            {{ __('Submit') }}
+                                        <button id="submit" type="button" class="btn btn-primary">
+                                            Submit
                                         </button>
                                     </div>
                                 </div>
@@ -126,7 +126,7 @@
                             <td>{{$item->datetime}}</td>
                             <td>{{$item->totalvalue}}</td>
                             <td class="text-right">
-                                <button type="button" class="button is-link" id="edit" data-name="{{$item->product}}" data-quantity="{{$item->quantity}}" data-price="{{$item->price}}" >Edit</button>
+                                <button type="button" class="btn btn-default" id="edit" data-name="{{$item->product}}" data-quantity="{{$item->quantity}}" data-price="{{$item->price}}" >Edit</button>
                             </td>
                         </tr>
                     @endforeach
