@@ -9,8 +9,12 @@ class PageController extends Controller
 {
     public function index()
     {
+        $total = 0;
         $inventory = Storage::disk('local')->exists('inventory.json') ? json_decode(Storage::disk('local')->get('inventory.json')) : [];
-        return view('welcome', compact('inventory'));
+        foreach ($inventory as $item) {
+            $total += $item->totalvalue;
+        }
+        return view('welcome', compact(['inventory', 'total']));
     }
 
     public function create(Request $request)
@@ -22,6 +26,7 @@ class PageController extends Controller
         ]);
 
         try{
+            $total = 0;
             $inventory = Storage::disk('local')->exists('inventory.json') ? json_decode(Storage::disk('local')->get('inventory.json')) : [];
 
             $inputData = $request->only(['product', 'quantity', 'price']);
@@ -29,9 +34,15 @@ class PageController extends Controller
             $inputData['totalvalue'] = request('quantity') * request('price');
 
             array_push($inventory, $inputData);
+
             Storage::disk('local')->put('inventory.json', json_encode($inventory));
 
-            return response()->json($inputData);
+            $inventory = Storage::disk('local')->exists('inventory.json') ? json_decode(Storage::disk('local')->get('inventory.json')) : [];
+            foreach ($inventory as $item) {
+                $total += $item->totalvalue;
+            }
+
+            return response()->json(['row'=>$inputData, 'total'=>$total]);
 
         } catch (\Exception $e){
             return response()->json(['status'=>401, 'message'=>$e]);
